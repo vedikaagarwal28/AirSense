@@ -3,7 +3,6 @@ import sys, threading, time, math
 from collections import deque
 import os, subprocess
 import datetime
-import pyvirtualcam
 
 
 import cv2, mediapipe as mp, pyautogui, speech_recognition as sr
@@ -159,9 +158,6 @@ def cv_worker():
     hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
     cap = cv2.VideoCapture(0)
-    # Virtual camera setup (OBS will read this)
-    cam = pyvirtualcam.Camera(width=640, height=480, fps=30)
-    print("Virtual Camera Started")
 
     if not cap.isOpened():
         print("Camera not found.")
@@ -289,13 +285,6 @@ def cv_worker():
 
         shared["gesture"] = gesture
         shared["status_text"] = f"Gesture: {gesture}"
-        # Convert frame for virtual camera
-        frame_bgr = frame  # original frame from webcam
-        frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
-
-        # Send to virtual cam
-        cam.send(frame_rgb)
-        cam.sleep_until_next_frame()
 
 
     cap.release()
